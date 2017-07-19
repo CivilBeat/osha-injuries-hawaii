@@ -1,0 +1,142 @@
+---
+title: "OSHA Analysis"
+output: html_notebook
+---
+
+This notebook covers the analysis behind Civil Beat's *add date and story link*.
+
+## Setup
+
+Load R packages used in analysis and read in data.
+
+```{r packages, message=FALSE}
+library(tidyverse)
+library(stringr)
+```
+
+## Dataset 1: Amputations, Hospitalizations, Losses of an Eye
+
+This dataset was used for the first section of the article with the map. It contains data on severe work-related injuries, defined as an amputation, in-patient hospitalization, or loss of an eye. OSHA has required these injuries to be reported since January 1, 2015, and the dataset covers from then to December 31, 2016.
+
+The raw data was downloaded from the OSHA Severe Injury Reports [webpage](https://www.osha.gov/severeinjury/index.html).
+
+```{r read_severe_data, message=FALSE}
+severe_injuries <- read_csv("data/raw/severeinjury_osha.csv")
+```
+
+Because Hawaii is primarily covered by a state plan, it can't really be compared to other states. An explanation of which states are covered by state plans and which are covered by federal OSHA is available [here](https://www.osha.gov/dcsp/osp/).
+
+In preparing this data for the article, there were two main steps:
+
+1. Filtering the data to only injuries occurring in Hawaii.
+
+Before filtering, check that there are no mispellings or alternate spellings (e.g. "HI" and "Hawaii").
+
+```{r check_state_spellings}
+unique(severe_injuries$State)
+```
+
+Looks like we're good to go using "HAWAII" in the State column.
+
+```{r filter}
+hawaii_inj <- filter(severe_injuries, State == "HAWAII")
+```
+
+2. Geocoding the locations of the injuries.
+
+Attempted to geocode with an online geocoding tool, but I didn't get a good level of precision for most addresses. Since there were only 20 entries in Hawaii in the dataset, I hand geocoded the points using Google Maps. The filtered and geocoded file is in the data/clean folder and is called hawaii_severe_inj_geocoded.csv.
+
+## Dataset 2: Investigations and Injuries
+
+The rest of the story used the OSHA Enforcement [dataset](https://enforcedata.dol.gov/views/data_summary.php) containing information on OSHA inspections. Many of these inspections are the result of an accident in which employees are injured, which was the focus of this analysis. The descriptions for all the tables in the dataset are available [here](http://developer.dol.gov/health-and-safety/dol-osha-enforcement/).
+
+### Cleaning and Data Prep
+
+This dataset required significantly more cleaning and preparation, as it is far more extensive and complex. The data after all the prep in this section is in the data/clean folder, so you can skip straight to the [Analysis](https://github.com/CivilBeat/osha-injuries-hawaii/blob/master/osha_injury_analysis_hi.Rmd#Analysis) section if you want.
+
+Because the story focused on injuries, I needed three tables: inspection, accident, and accident_injury. The inspection table is too large to store on GitHub, but this shows the steps used to generate the "data/clean/inspection_hi.csv" file.
+
+```{r raw, message=FALSE}
+# inspection <- read_csv("data/raw/osha_inspection.csv")
+accident <- read_csv("data/raw/osha_accident.csv")
+accident_injury <- read_csv("data/raw/osha_accident_injury.csv")
+```
+
+First, simplify by getting rid of un-needed columns.
+
+```{r remove_columns}
+#accident state_flag, event_time, abstract_text fields all NAs; don't care about load date
+accident <- select(accident, -c(state_flag, event_time, abstract_text, load_dt))
+#accident_injury fall_distance all NAs; don't care about load date
+accident_injury <- select(accident_injury, -c(fall_distance, load_dt))
+#inspection state_flag all NAs; don't care about load date
+inspection <- select(inspection, -c(state_flag, ld_dt))
+```
+
+The inspection table is the only one containing location data, so need to filter it to Hawaii first and use that to filter the other tables.
+
+Have both site and mailing addresses. Probably interested in site address, but will include mailing too just to be thorough. Also know from DOL Establishment [search](https://www.osha.gov/pls/imis/establishment.html) that inspections in Hawaii appear to be associated with reporting IDs 0951510 and 0936300. I decided to select inspections matching any of these conditions.
+
+```{r hawaii_inspections}
+inspection_hi <- filter(inspection, (site_state == 'HI' | mail_state == "HI" | reporting_id %in% c(0951510, 0936300)))
+```
+
+Now use the activity_nr column from this table to filter the accident_injury table.
+
+```{r hi_inj}
+accident_injury_hi <- filter(accident_injury, rel_insp_nr %in% inspection_hi$activity_nr)
+```
+
+Then use filtered accident_injury table to filter accident table.
+
+```{r hi_accident}
+accident_hi <- filter(accident, summary_nr %in% accident_injury_hi$summary_nr)
+```
+
+### Analysis
+
+After cleaning the tables, I saved them so I don't have to load and filter them every time.
+
+```{r read_clean_data, message=FALSE}
+inspection_hi <- read_csv("data/clean/inspection_hi.csv")
+accident_injury_hi <- read_csv("data/clean/accident_injury_hi.csv")
+accident_hi <- read_csv("data/clean/accident_hi.csv")
+```
+
+Read in lookup tables. I used a simple scraper to create dictionaries for SIC (Standard Industrial Classification) codes from the OSHA SIC [manual](https://www.osha.gov/pls/imis/sic_manual.html).
+
+```{r read_data, message=FALSE}
+sic_two_dig <- read_csv("data/clean/sic_2_dig_codes.csv")
+sic_four_dig <- read_csv("data/clean/sic_4_dig_codes.csv")
+```
+
+Combine three tables to get full injury information. Some accidents are associated with multiple inspections, so it is necessary to filter out rows that don't correspond to injuries after the tables are joined.
+
+```{r injuries_set_up}
+injuries_hi <- left_join(accident_injury_hi, accident_hi, by = c("summary_nr" = "summary_nr")) %>% 
+  left_join(inspection_hi, by = c("rel_insp_nr" = "activity_nr")) %>% filter(!(age == 0 & is.na(sex) & 
+                                            nature_of_inj == 0 & part_of_body == 0 &src_of_injury == 0 & 
+                                            event_type == 0 & evn_factor == 0 & hum_factor == 0))
+```
+
+Which companies have had the most injuries?
+
+```{r inj_by_company}
+group_by(injuries_hi, estab_name) %>% summarise(n = n()) %>% arrange(desc(n))
+```
+
+Add industry information based on SIC codes.
+
+```{r add_sic_codes}
+injuries_hi <- mutate(injuries_hi, sic_two_dig = substr(sic_code, 1, 2))
+
+injuries_hi <- left_join(injuries_hi, sic_four_dig, by = c("sic_code" = "sic_code")) %>%
+  left_join(sic_two_dig, by = c("sic_two_dig" = "sic_code"))
+```
+
+Which industries have the most injuries?
+
+```{r}
+group_by(injuries_hi, division) %>% summarise(n = n()) %>% arrange(desc(n))
+```
+
