@@ -1,0 +1,84 @@
+sic_code,descrip,division
+01,Agricultural Production Crops,"Agriculture, Forestry, and Fishing"
+02,Agriculture production livestock and animal specialties,"Agriculture, Forestry, and Fishing"
+07,Agricultural Services,"Agriculture, Forestry, and Fishing"
+08,Forestry,"Agriculture, Forestry, and Fishing"
+09,"Fishing, hunting, and trapping","Agriculture, Forestry, and Fishing"
+10,Metal Mining,Mining
+12,Coal Mining,Mining
+13,Oil And Gas Extraction,Mining
+14,"Mining And Quarrying Of Nonmetallic Minerals, Except Fuels",Mining
+15,Building Construction General Contractors And Operative Builders,Construction
+16,Heavy Construction Other Than Building Construction Contractors,Construction
+17,Construction Special Trade Contractors,Construction
+20,Food And Kindred Products,Manufacturing
+21,Tobacco Products,Manufacturing
+22,Textile Mill Products,Manufacturing
+23,Apparel And Other Finished Products Made From Fabrics And Similar Materials,Manufacturing
+24,"Lumber And Wood Products, Except Furniture",Manufacturing
+25,Furniture And Fixtures,Manufacturing
+26,Paper And Allied Products,Manufacturing
+27,"Printing, Publishing, And Allied Industries",Manufacturing
+28,Chemicals And Allied Products,Manufacturing
+29,Petroleum Refining And Related Industries,Manufacturing
+30,Rubber And Miscellaneous Plastics Products,Manufacturing
+31,Leather And Leather Products,Manufacturing
+32,"Stone, Clay, Glass, And Concrete Products",Manufacturing
+33,Primary Metal Industries,Manufacturing
+34,"Fabricated Metal Products, Except Machinery And Transportation Equipment",Manufacturing
+35,Industrial And Commercial Machinery And Computer Equipment,Manufacturing
+36,"Electronic And Other Electrical Equipment And Components, Except Computer Equipment",Manufacturing
+37,Transportation Equipment,Manufacturing
+38,"Measuring, Analyzing, And Controlling Instruments; Photographic, Medical And Optical Goods; Watches And Clocks",Manufacturing
+39,Miscellaneous Manufacturing Industries,Manufacturing
+40,Railroad Transportation,"Transportation, Communications, Electric, Gas, and Sanitary Services"
+41,Local And Suburban Transit And Interurban Highway Passenger Transportation,"Transportation, Communications, Electric, Gas, and Sanitary Services"
+42,Motor Freight Transportation And Warehousing,"Transportation, Communications, Electric, Gas, and Sanitary Services"
+43,United States Postal Service,"Transportation, Communications, Electric, Gas, and Sanitary Services"
+44,Water Transportation,"Transportation, Communications, Electric, Gas, and Sanitary Services"
+45,Transportation By Air,"Transportation, Communications, Electric, Gas, and Sanitary Services"
+46,"Pipelines, Except Natural Gas","Transportation, Communications, Electric, Gas, and Sanitary Services"
+47,Transportation Services,"Transportation, Communications, Electric, Gas, and Sanitary Services"
+48,Communications,"Transportation, Communications, Electric, Gas, and Sanitary Services"
+49,"Electric, Gas, And Sanitary Services","Transportation, Communications, Electric, Gas, and Sanitary Services"
+50,Wholesale Trade-durable Goods,Wholesale Trade
+51,Wholesale Trade-non-durable Goods,Wholesale Trade
+52,"Building Materials, Hardware, Garden Supply, And Mobile Home Dealers",Retail Trade
+53,General Merchandise Stores,Retail Trade
+54,Food Stores,Retail Trade
+55,Automotive Dealers And Gasoline Service Stations,Retail Trade
+56,Apparel And Accessory Stores,Retail Trade
+57,"Home Furniture, Furnishings, And Equipment Stores",Retail Trade
+58,Eating And Drinking Places,Retail Trade
+59,Miscellaneous Retail,Retail Trade
+60,Depository Institutions,"Finance, Insurance, and Real Estate"
+61,Non-depository Credit Institutions,"Finance, Insurance, and Real Estate"
+62,"Security And Commodity Brokers, Dealers, Exchanges, And Services","Finance, Insurance, and Real Estate"
+63,Insurance Carriers,"Finance, Insurance, and Real Estate"
+64,"Insurance Agents, Brokers, And Service","Finance, Insurance, and Real Estate"
+65,Real Estate,"Finance, Insurance, and Real Estate"
+67,Holding And Other Investment Offices,"Finance, Insurance, and Real Estate"
+70,"Hotels, Rooming Houses, Camps, And Other Lodging Places",Services
+72,Personal Services,Services
+73,Business Services,Services
+75,"Automotive Repair, Services, And Parking",Services
+76,Miscellaneous Repair Services,Services
+78,Motion Pictures,Services
+79,Amusement And Recreation Services,Services
+80,Health Services,Services
+81,Legal Services,Services
+82,Educational Services,Services
+83,Social Services,Services
+84,"Museums, Art Galleries, And Botanical And Zoological Gardens",Services
+86,Membership Organizations,Services
+87,"Engineering, Accounting, Research, Management, And Related Services",Services
+88,Private Households,Services
+89,Miscellaneous Services,Services
+91,"Executive, Legislative, And General Government, Except Finance",Public Administration
+92,"Justice, Public Order, And Safety",Public Administration
+93,"Public Finance, Taxation, And Monetary Policy",Public Administration
+94,Administration Of Human Resource Programs,Public Administration
+95,Administration Of Environmental Quality And Housing Programs,Public Administration
+96,Administration Of Economic Programs,Public Administration
+97,National Security And International Affairs,Public Administration
+99,Nonclassifiable Establishments,Public Administration
